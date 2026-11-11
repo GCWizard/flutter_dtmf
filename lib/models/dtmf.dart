@@ -1,5 +1,8 @@
 import 'package:flutter_dtmf/models/tone.dart';
-import 'dart:js' as js;
+import 'dart:js_interop';
+
+@JS('eval')
+external JSAny? _eval(JSString code);
 
 class DTMF {
   var allFrequencies = {
@@ -28,9 +31,10 @@ class DTMF {
       {required String digits,
       int? durationMs,
       double? samplingRate,
-      double? volume}) {
-    dynamic audioContext = js.context.callMethod('AudioContext',
-        ['new (window.AudioContext || window.webkitAudioContext)()']);
+      double? volume,
+      bool? ignoreDtmfSystemSettings,
+      bool? forceMaxVolume}) {
+    dynamic audioContext = _eval('new (window.AudioContext || window.webkitAudioContext)()'.toJS);
 
     for (var i in digits.split('')) {
       var tone = Tone(
